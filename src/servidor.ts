@@ -1,55 +1,19 @@
 import 'dotenv/config'
 import express from 'express'
+import { buscarUsuario, usuarios, home, itemProdutos } from './controladores'
+import { IntermediarioGeral, meuIntermediario } from './intermediarios'
 
 const servidor = express()
 
-servidor.get('/usuarios', (req, res) => {
-    return res.send('ROTA COM CONROLADOR')
+servidor.use(IntermediarioGeral)
 
-}) /// Deste modo eu criei a rota juntamente com o controlador, que é tudo após a virgula.  ===>  ISSO É UMA ROTA COM CONTROLADOR!!!
+servidor.get('/', home) 
 
+servidor.get('/produtos/:item', meuIntermediario, itemProdutos)
 
-servidor.get('/') /// => Deste modo eu crio apenas a rota: ===> ISSO É UMA ROTA!!!
+servidor.get('/usuarios', usuarios) 
 
-
-
-/////////////////////////////############# BUSCANDO UM E-MAIL EM UM VETOR || COM VALIDAÇÃO ##############////////////////////////////////////////////////////
-
-const users = [
-    {nome:'Ana Maria', email:'anamaria@email.com.br'},
-    {nome:'Julia Santos', email:'juliasantos@email.com.br'},
-    {nome:'Cristina Faria', email:'cristinafaria@email.com.br'}
-]
-
-servidor.get('/users/:email', (req, res) => {
-    const {email} = req.params
-
-    const user = users.find((item => {
-        return item.email === email
-    }))
-
-    if (!user) {
-        return res.send('Pessoa não encontrada!')
-    }
-
-    return res.send(user)
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+servidor.get('/users/:email', buscarUsuario)
 
 
 servidor.listen(process.env.PORT)
